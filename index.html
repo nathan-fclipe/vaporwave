@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vaporwave Experience</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'MS Gothic', 'Arial', sans-serif;
+            color: white;
+            height: 100vh;
+            overflow: hidden;
+            cursor: none;
+            text-align: center;
+        }
+        
+        .video-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            filter: hue-rotate(180deg) saturate(1.8);
+        }
+        
+        video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .titles {
+            position: absolute;
+            top: 40%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
+        }
+        
+        h1 {
+            font-size: 4.5rem;
+            margin-bottom: 1.5rem;
+            text-shadow: 0 0 10px #ff00ff, 
+                         0 0 20px #00ffff;
+            letter-spacing: 3px;
+            line-height: 1.2;
+        }
+        
+        .japanese {
+            font-size: 3.5rem;
+            margin-bottom: 2rem;
+            color: #00ffff;
+        }
+        
+        .cursor {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: rgba(0, 255, 255, 0.7);
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            mix-blend-mode: difference;
+            z-index: 999;
+            transition: transform 0.1s ease;
+        }
+        
+        .pulse {
+            animation: pulse 4s infinite alternate;
+        }
+        
+        .signature {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 1.5rem;
+            color: rgba(255, 255, 255, 0.7);
+            letter-spacing: 5px;
+            text-shadow: 0 0 8px #ff00ff,
+                         0 0 12px #00ffff;
+            font-family: 'MS Gothic', monospace;
+            width: 100%;
+            text-align: center;
+        }
+        
+        /* Music Button Styles */
+        .music-control {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            z-index: 1000;
+        }
+        
+        .music-btn {
+            padding: 12px 25px;
+            font-family: 'MS Gothic', sans-serif;
+            font-size: 1.2rem;
+            background: rgba(0, 0, 0, 0.3);
+            color: #00ffff;
+            border: 2px solid #ff00ff;
+            border-radius: 0;
+            cursor: none;
+            text-shadow: 0 0 5px #ff00ff;
+            letter-spacing: 2px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+        }
+        
+        .music-btn:hover {
+            background: rgba(255, 0, 255, 0.2);
+            box-shadow: 0 0 15px #00ffff;
+            color: #ff00ff;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 0.7; }
+            100% { opacity: 1; text-shadow: 0 0 15px #ff00ff, 0 0 30px #00ffff; }
+        }
+        
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            .japanese {
+                font-size: 2rem;
+            }
+            
+            .signature {
+                font-size: 1rem;
+                bottom: 60px;
+            }
+            
+            .music-btn {
+                padding: 8px 15px;
+                font-size: 1rem;
+                bottom: 15px;
+                left: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="video-container">
+        <video autoplay muted loop id="bgVideo">
+            <source src="vaporwave.mp4" type="video/mp4">
+        </video>
+    </div>
+    
+    <div class="titles">
+        <h1 class="japanese pulse">バ ポ ロ ウ ェ イ ブ</h1>
+        <h1 class="pulse">Ｎ Ｅ Ｏ Ｎ Ｄ Ｒ Ｅ Ａ Ｍ</h1>
+        <h1 class="pulse">ＤＩＧＩＴＡＬ ＮＯＳＴＡＬＧＩＡ</h1>
+    </div>
+    
+    <div class="signature pulse">Ｎ Ａ Ｔ Ａ Ｎ   Ｆ Ｅ Ｌ Ｉ Ｐ Ｅ</div>
+    
+    <div class="music-control">
+        <button class="music-btn" id="musicBtn">ＳＴＡＲＴ　ＳＯＮＧ</button>
+    </div>
+    
+    <div class="cursor"></div>
+    
+    <audio loop id="bgMusic">
+        <source src="vaporwave-music.mp3" type="audio/mpeg">
+    </audio>
+    
+    <script>
+        // Music Control
+        const musicBtn = document.getElementById('musicBtn');
+        const audio = document.getElementById('bgMusic');
+        const video = document.getElementById('bgVideo');
+        let isPlaying = false;
+        
+        musicBtn.addEventListener('click', function() {
+            if (!isPlaying) {
+                audio.play()
+                    .then(() => {
+                        isPlaying = true;
+                        musicBtn.textContent = "ＳＴＯＰ　ＳＯＮＧ";
+                        musicBtn.style.color = "#ff00ff";
+                    })
+                    .catch(e => {
+                        alert("Click anywhere on the page first to enable audio");
+                        console.log("Audio error:", e);
+                    });
+            } else {
+                audio.pause();
+                isPlaying = false;
+                musicBtn.textContent = "ＳＴＡＲＴ　ＳＯＮＧ";
+                musicBtn.style.color = "#00ffff";
+            }
+        });
+        
+        // Enable audio on first interaction
+        function enableAudio() {
+            audio.muted = false;
+            video.muted = false;
+            document.removeEventListener('click', enableAudio);
+            document.removeEventListener('keydown', enableAudio);
+        }
+        
+        document.addEventListener('click', enableAudio);
+        document.addEventListener('keydown', enableAudio);
+        
+        // Cursor effects
+        document.addEventListener('mousemove', (e) => {
+            const cursor = document.querySelector('.cursor');
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+            
+            if (e.target.tagName === 'H1' || e.target.classList.contains('signature') || e.target.classList.contains('music-btn')) {
+                cursor.style.transform = 'translate(-50%, -50%) scale(1.8)';
+                cursor.style.backgroundColor = 'rgba(255, 0, 255, 0.7)';
+            } else {
+                cursor.style.transform = 'translate(-50%, -50%) scale(1)';
+                cursor.style.backgroundColor = 'rgba(0, 255, 255, 0.7)';
+            }
+        });
+        
+        // Check if video has audio
+        video.addEventListener('loadedmetadata', function() {
+            if (video.duration > 0 && !video.muted) {
+                audio.remove();
+            }
+        });
+    </script>
+</body>
+</html>
